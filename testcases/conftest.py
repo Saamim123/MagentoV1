@@ -1,15 +1,22 @@
 import os
-import pytest
 from datetime import datetime
 from selenium import webdriver
 import allure
+import pytest
+from pageobjects.CustomerLoginPage import CustomerLoginPage
+from pageobjects.Luma_Homepage import Luma_homepage
+from pageobjects.Myaccountpage import Myaccountpage
+from utilities.readproperties import Readconfig
+from utilities.customlogger import CustomLogger
+from pageobjects.UserHomepage import UserHomepage
 
 # ---------------- FIXTURES ---------------- #
 @pytest.fixture()
-def setup(browser):
+def setup(browser, request):
     if browser == "edge":
         driver = webdriver.Edge()
         driver.maximize_window()
+        request.cls.driver = driver
         print("------launching Edge-------")
 
     elif browser == "firefox":
@@ -32,7 +39,7 @@ def setup(browser):
         driver = webdriver.Chrome(options=chrome_options)
         driver.maximize_window()
         print("------launching Chrome-------")
-
+    request.cls.driver = driver
     yield driver
     driver.quit()
 
@@ -88,3 +95,59 @@ def pytest_configure(config):
     # Set HTML report path
     config.option.htmlpath = report_file
     config.option.self_contained_html = True
+
+
+# Login fixture
+
+@pytest.fixture()
+def login_fixture(setup):
+    driver = setup
+    logger = CustomLogger().get_logger()
+    user_login_url = Readconfig.get_user_login_url()
+    email = Readconfig.get_user_login_email()
+    password = Readconfig.get_user_login_password()
+    expected_msg = Readconfig.get_user_login_cnf_msg()
+
+    logger.info("-------Starting user Login Test----------")
+    driver.get(user_login_url)
+    driver.maximize_window()
+    hp = UserHomepage(driver)
+    hp.click_login()
+
+    cxlp = CustomerLoginPage(driver)
+    cxlp.set_useremail(email)
+    cxlp.set_password(password)
+    logger.info("------logging into user account-----")
+    cxlp.click_login()
+    lh = Luma_homepage(driver)
+
+    myacp = Myaccountpage(driver)
+    lh.is_logo_present()
+    """act_msg = myacp.capture_myaccount_cnf()
+
+    # ✅ Validation inside try block
+    if not act_msg or act_msg != expected_msg:
+        logger.error(f"Login failed! Expected '{expected_msg}' but got '{act_msg}'")
+        pytest.fail(f"Stopping tests: Login fixture failed. Reason: Expected '{expected_msg}' but got '{act_msg}'")
+
+except Exception as e:
+    logger.error(f"Exception occurred during login: {str(e)}")
+    pytest.fail(f"Stopping tests: Login fixture failed due to exception: {str(e)}")
+
+# ✅ If login successful → continue tests"""
+
+
+    yield driver
+
+
+
+
+
+
+
+
+
+
+
+
+

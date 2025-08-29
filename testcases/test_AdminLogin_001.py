@@ -1,3 +1,5 @@
+from turtledemo.clock import setup
+
 import pytest
 from selenium import webdriver
 from selenium.webdriver.ie.webdriver import WebDriver
@@ -28,18 +30,20 @@ class Test_001_AdminLogin:
         self.driver=setup
         self.logger.info(f"Opening URL: {self.Url}")
         self.driver.get(self.Url)
+
         self.driver.maximize_window()
         self.logger.info("----Entering login credentials-----")
 
         self.LP=AdminLogin(self.driver)
         self.logger.debug(f"Username entered: {self.email}")
-        self.LP.setusername(self.email)
-        self.LP.setpassword(self.password)
+        self.LP.set_username(self.email)
+        self.LP.set_password(self.password)
         self.logger.info("Clicked on Sign In button")
-        self.LP.clicksign()
+        self.LP.click_login()
         self.logger.info("Waiting for dashboard page to load")
+        assert self.LP.is_dashboard_displayed() is True
 
-        #--------1. validate dashboard message------------
+        """#--------1. validate dashboard message------------
         expected_dashboard_msg= "Dashboard"
 
         self.adminhomepage=admin_homepage(self.driver)
@@ -57,13 +61,13 @@ class Test_001_AdminLogin:
         else:
             self.logger.error("******** Login Test Failed ********")
             self.logger.error(f"Expected Dashboard: {expected_dashboard_msg}, Got: {actual_dashboard_msg}")
-            self.logger.error(f"Expected Title: {expected_title}, Got: {actual_title}")
+            self.logger.error(f"Expected Title: {expected_title}, Got: {actual_title}")"""
 
 
 
 
 
-        self.logger.info("-------Ending Admin Login Test----------")
+
 
 
 

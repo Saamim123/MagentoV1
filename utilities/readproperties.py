@@ -44,3 +44,23 @@ class Readconfig:
         password = config.get('common info', 'password')
         return password
 
+    @staticmethod
+    def get_user_login_email():
+        email = config.get('common info', 'user_login_email')
+        return email
+
+    @staticmethod
+    def get_user_login_password():
+        password = config.get('common info', 'user_login_password')
+        return password
+
+    @staticmethod
+    def get_user_login_cnf_msg():
+        msg = config.get('common info', 'user_login_confirmation_msg')
+        return msg
+
+    @staticmethod
+    def get_search_item_name():
+        item_name=config.get('common info', 'search_item')
+        return item_name
+
