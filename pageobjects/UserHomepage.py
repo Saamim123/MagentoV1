@@ -7,7 +7,7 @@ from pageobjects.BasePage import BasePage
 
 class UserHomepage(BasePage):
     create_account_linktext=(By.LINK_TEXT, "Create an Account")
-    login_linktext=(By.LINK_TEXT,"Bejelentkezés")
+    login_linktext=(By.XPATH,"//div[@class='panel header']//a[contains(text(),'Sign In')]")
 
 
     #action
